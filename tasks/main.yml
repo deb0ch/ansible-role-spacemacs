@@ -67,19 +67,3 @@
     chdir: '{{ emacs_src_dir }}'
     creates: /usr/local/bin/emacs
   when: emacs_build.changed
-
-- name: Cleanup Emacs build
-  become: true
-  block:
-    - find:
-        paths: "{{ emacs_src_dir }}"
-        patterns: "*.o"
-        recurse: yes
-      register: find_results
-
-    - file:
-        path: "{{ item.path }}"
-        state: absent
-      loop: "{{ find_results.files }}"
-      loop_control:
-        label: "deleted {{ item.path }}"
