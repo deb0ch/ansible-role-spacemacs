@@ -1,0 +1,85 @@
+
+- name: Add source repository to apt
+  apt_repository:
+    repo: deb-src http://us.archive.ubuntu.com/ubuntu/ bionic main restricted
+
+- name: Install build dependencies for Emacs
+  apt:
+    name: emacs
+    state: build-dep
+
+- name: Install dependencies for Emacs
+  apt:
+    name:
+      - build-essential
+      - automake
+      - texinfo
+      - libjpeg-dev
+      - libncurses5-dev
+      - libtiff5-dev
+      - libgif-dev
+      - libpng-dev
+      - libxpm-dev
+      - libgtk-3-dev
+      - libgnutls28-dev
+
+- name: Download Emacs source
+  become: true
+  get_url:
+    url: '{{ emacs_url }}'
+    dest: '{{ emacs_parent_src_dir }}/{{ emacs_tgz }}'
+    timeout: '{{ emacs_timeout_seconds }}'
+    mode: 0644
+  register: emacs_source
+
+- name: Unarchive Emacs source
+  become: true
+  unarchive:
+    remote_src: true
+    src: '{{ emacs_parent_src_dir }}/{{ emacs_tgz }}'
+    dest: '{{ emacs_parent_src_dir }}'
+    creates: '{{ emacs_src_dir }}'
+  when: emacs_source.changed
+  register: emacs_unarchive
+
+- name: Configure Emacs build
+  become: true
+  command: ./configure --with-modules
+  args:
+    chdir: '{{ emacs_src_dir }}'
+    creates: '{{ emacs_src_dir }}/Makefile'
+  when: emacs_unarchive.changed
+  register: emacs_configure
+
+- name: Build Emacs
+  become: true
+  command: make -j{{ ansible_processor_vcpus }}
+  args:
+    chdir: '{{ emacs_src_dir }}'
+    creates: '{{ emacs_src_dir }}/src/emacs'
+  when: emacs_configure.changed
+  register: emacs_build
+
+- name: Install Emacs
+  become: true
+  command: make install
+  args:
+    chdir: '{{ emacs_src_dir }}'
+    creates: /usr/local/bin/emacs
+  when: emacs_build.changed
+
+- name: Cleanup Emacs build
+  become: true
+  block:
+    - find:
+        paths: "{{ emacs_src_dir }}"
+        patterns: "*.o"
+        recurse: yes
+      register: find_results
+
+    - file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ find_results.files }}"
+      loop_control:
+        label: "deleted {{ item.path }}"

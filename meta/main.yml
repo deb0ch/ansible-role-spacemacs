@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: spacemacs
+  author: deb0ch
+  description: Install Spacemacs building Emacs from source
+  company: Blackfoot.io
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Ubuntu
+    versions:
+      - bionic
+
+  galaxy_tags: [ emacs, spacemacs ]
+
+dependencies: []

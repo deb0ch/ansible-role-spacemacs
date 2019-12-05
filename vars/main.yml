@@ -1,0 +1,5 @@
+
+emacs_name : emacs-{{ emacs_version }}
+emacs_tgz : '{{ emacs_name }}.tar.gz'
+emacs_url : '{{ emacs_mirror }}/{{ emacs_tgz }}'
+emacs_src_dir: '{{ emacs_parent_src_dir }}/{{ emacs_name }}'

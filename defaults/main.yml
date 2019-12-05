@@ -1,0 +1,5 @@
+
+emacs_version : '26.3'
+emacs_mirror : http://ftp.gnu.org/gnu/emacs
+emacs_timeout_seconds : 600
+emacs_parent_src_dir: /usr/local/src
