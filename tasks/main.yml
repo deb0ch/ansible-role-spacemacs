@@ -1,2 +1,3 @@
 
 - include: build-emacs.yml
+- include: spacemacs.yml

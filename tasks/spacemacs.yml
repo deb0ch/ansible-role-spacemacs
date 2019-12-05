@@ -1,0 +1,33 @@
+
+- name: Clone Spacemacs repo
+  vars:
+    url: "{{ user.spacemacs_mirror | default(spacemacs_url) }}"
+    version: "{{ user.spacemacs_version | default(spacemacs_version) }}"
+    username: "{{ user.username }}"
+  git:
+    repo: "{{ url }}"
+    dest: "~{{ username }}/.emacs.d"
+    version: "{{ version }}"
+  become: yes
+  become_user: "{{ username }}"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+    label: "cloned {{ url }}@{{ version }}"
+
+- name: Clone Spacemacs user config
+  vars:
+    url: "{{ user.spacemacs_config_url }}"
+    version: "{{ user.spacemacs_version | default('HEAD') }}"
+    username: "{{ user.username }}"
+  git:
+    repo: "{{ url }}"
+    dest: "~{{ username }}/.spacemacs.d"
+    version: "{{ version }}"
+  become: yes
+  become_user: "{{ username }}"
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+    label: "cloned {{ url }}@{{ version }}"
+  when: user.spacemacs_config_url
