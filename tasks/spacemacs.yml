@@ -18,7 +18,7 @@
 - name: Clone Spacemacs user config
   vars:
     url: "{{ user.spacemacs_config_url }}"
-    version: "{{ user.spacemacs_version | default('HEAD') }}"
+    version: "{{ user.spacemacs_config_version | default('HEAD') }}"
     username: "{{ user.username }}"
   git:
     repo: "{{ url }}"
