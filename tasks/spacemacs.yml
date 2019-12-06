@@ -41,17 +41,13 @@
   register: sourcecodepro_unarchive
 
 - name: Copy Source Code Pro to /usr/share/fonts
-  vars:
-    src: "{{ sourcecodepro_unarchive.dest }}{{ sourcecodepro_unarchive.files[0] | regex_replace('\\/$', '')}}"
-    dest: /usr/share/fonts
   copy:
-    src: "{{ src }}"
-    dest: "{{ dest }}"
-    mode: 0644
+    src: "{{ sourcecodepro_unarchive.dest }}{{ sourcecodepro_unarchive.files[0] }}OTF/"
+    dest: /usr/share/fonts/source-code-pro
     remote_src: yes
   when: sourcecodepro_unarchive.changed
   register: sourcecodepro_copy
 
 - name: Update fc-cache for new font
-  command: fc-cache -frv
+  command: fc-cache -fv
   when: sourcecodepro_copy.changed
