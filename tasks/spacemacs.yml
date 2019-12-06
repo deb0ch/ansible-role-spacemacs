@@ -13,7 +13,7 @@
   loop: "{{ users }}"
   loop_control:
     loop_var: user
-    label: "cloned {{ url }}@{{ version }}"
+    label: "clone {{ url }}@{{ version }}"
 
 - name: Clone Spacemacs user config
   vars:
@@ -29,5 +29,36 @@
   loop: "{{ users }}"
   loop_control:
     loop_var: user
-    label: "cloned {{ url }}@{{ version }}"
+    label: "clone {{ url }}@{{ version }}"
   when: user.spacemacs_config_url
+
+- name: Get Source Code Pro
+  unarchive:
+    src: "{{ source_code_pro_url }}"
+    dest: /usr/local/src/
+    list_files: yes
+    remote_src: yes
+  register: sourcecodepro_unarchive
+
+- name: Copy Source Code Pro for users
+  vars:
+    src: "{{ sourcecodepro_unarchive.dest }}{{ sourcecodepro_unarchive.files[0] | regex_replace('\\/$', '')}}"
+    dest: "~{{ username }}/.fonts"
+    username: "{{ user.username }}"
+  copy:
+    src: "{{ src }}"
+    dest: "{{ dest }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+    remote_src: yes
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+    label: "copy {{ src }} to {{ dest }} for {{ username }}"
+  when: sourcecodepro_unarchive.changed
+  register: sourcecodepro_copy
+
+- name: Update fc-cache for new font
+  command: fc-cache -fv
+  when: sourcecodepro_copy.changed

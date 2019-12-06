@@ -32,13 +32,14 @@
     mode: 0644
   register: emacs_source
 
+  # TODO: merge with prev step
 - name: Unarchive Emacs source
   become: true
   unarchive:
-    remote_src: true
     src: '{{ emacs_parent_src_dir }}/{{ emacs_tgz }}'
     dest: '{{ emacs_parent_src_dir }}'
     creates: '{{ emacs_src_dir }}'
+    remote_src: true
   when: emacs_source.changed
   register: emacs_unarchive
 
