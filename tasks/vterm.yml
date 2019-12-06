@@ -1,0 +1,10 @@
+
+# Installing with snap since minimum version is 3.16
+- name: Install cmake for vterm
+  snap:
+    name: cmake
+    classic: yes
+
+- name: Install libtool for vterm
+  apt:
+    name: libtool-bin
