@@ -8,6 +8,7 @@
     repo: "{{ url }}"
     dest: "~{{ username }}/.emacs.d"
     version: "{{ version }}"
+    update: no
   become: yes
   become_user: "{{ username }}"
   loop: "{{ users }}"
@@ -24,6 +25,7 @@
     repo: "{{ url }}"
     dest: "~{{ username }}/.spacemacs.d"
     version: "{{ version }}"
+    update: no
   become: yes
   become_user: "{{ username }}"
   loop: "{{ users }}"
