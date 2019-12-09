@@ -32,7 +32,7 @@
     label: "clone {{ url }}@{{ version }}"
   when: user.spacemacs_config_url
 
-- name: Get Source Code Pro
+- name: Get the Source Code Pro font
   unarchive:
     src: "{{ source_code_pro_url }}"
     dest: /usr/local/src/
