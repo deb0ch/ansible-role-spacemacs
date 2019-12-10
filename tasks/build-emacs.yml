@@ -1,14 +1,17 @@
 
 - name: Add source repository to apt
+  become: true
   apt_repository:
     repo: deb-src http://us.archive.ubuntu.com/ubuntu/ bionic main restricted
 
 - name: Install build dependencies for Emacs
+  become: true
   apt:
     name: emacs
     state: build-dep
 
 - name: Install dependencies for Emacs
+  become: true
   apt:
     name:
       - build-essential
