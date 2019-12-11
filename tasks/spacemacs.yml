@@ -39,7 +39,7 @@
     src: "{{ source_code_pro_url }}"
     dest: /usr/local/src/
     list_files: yes
-    remote_src: yes
+    remote_src: true
   register: sourcecodepro_unarchive
 
 - name: Copy Source Code Pro to /usr/share/fonts
